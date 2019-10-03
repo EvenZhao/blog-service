@@ -1,0 +1,37 @@
+{
+  "name": "blog-service",
+  "version": "1.0.0",
+  "description": "blog service",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon ./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EvenZhao/blog-service.git"
+  },
+  "keywords": [
+    "blog",
+    "service",
+    "koa2"
+  ],
+  "author": "even",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/EvenZhao/blog-service/issues"
+  },
+  "homepage": "https://github.com/EvenZhao/blog-service#readme",
+  "dependencies": {
+    "koa": "^2.8.2",
+    "koa-router": "^7.4.0",
+    "koa-static": "^5.0.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.0.3",
+    "eslint": "^6.1.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-react": "^7.15.1",
+    "nodemon": "^1.19.3"
+  }
+}

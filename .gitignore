@@ -1,5 +1,9 @@
-# Object file
-*.o
+dist
+log
+build
+node_modules
 
-# Ada Library Information
-*.ali
+.DS_Store
+*.log
+.vscode
+
