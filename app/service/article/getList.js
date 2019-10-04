@@ -1,3 +1,5 @@
+const wrapRes = require('../../utils/wrapResponse');
+
 module.exports = (ctx) => new Promise((resolve, reject) => {
 	const { pageSize, pageNo } = ctx.query;
 	const list = [{
@@ -29,13 +31,12 @@ module.exports = (ctx) => new Promise((resolve, reject) => {
 	];
 	const index = pageSize * (pageNo - 1);
 	const newList = list.slice(index, index + pageSize);
-	console.log(newList, index, pageSize, pageNo);
-	ctx.body = {
-		success: true,
-		value: {
-			list: newList,
-			total: 20,
-		},
-	};
-	resolve();
+	// ctx.body = wrapRes.wrapSuccess({
+	// 	list: newList,
+	// 	total: 20,
+	// });
+	resolve({
+		list: newList,
+		total: 20,
+	});
 });

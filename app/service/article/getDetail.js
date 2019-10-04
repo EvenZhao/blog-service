@@ -1,26 +1,23 @@
-module.exports = (ctx) => new Promise((resolve, reject) => {
-	const { id } = ctx.query;
+const monk = require('monk');
 
-	const dataSource = [
-		{
-			content: 'yyyyyysbbb',
-			title: 'title',
-			modifyTime: '2019-10-03 12:34:43',
-			tag: ['react'],
-			id: 1,
-		}, {
-			content: 'yyyyyysbbb',
-			title: 'title',
-			modifyTime: '2019-10-03 12:34:43',
-			tag: ['react'],
-			id: 2,
-		},
-	];
-	const newData = dataSource.find((item) => item.id == id);
-	ctx.body = {
-		success: newData || false,
-		value: newData,
-		msg: newData ? undefined : 'not found',
-	};
-	resolve();
+const db = monk('localhost:27017/blog');
+const article = db.get('article');
+
+
+module.exports = (ctx) => new Promise(async (resolve, reject) => {
+	const { id } = ctx.query;
+	let docs = null;
+	try {
+		docs = await article.find({});
+	} catch (err) {
+		reject(err);
+		return;
+	}
+	const newData = docs.find((item) => item.id == id);
+	if (newData) {
+		resolve(newData);
+		return;
+	}
+	reject('not found');
+
 });
