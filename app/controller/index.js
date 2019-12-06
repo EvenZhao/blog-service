@@ -1,13 +1,13 @@
 const Router = require('koa-router');
 
-const getList = require('../service/article/getList');
+const saveArtical = require("../service/article/saveArtical");
 const getDetail = require('../service/article/getDetail');
 
 const router = new Router({ prefix: '/api' });
 
 
-router.get('/article/getList', async (ctx, next) => {
-	await getList(ctx);
+router.get('/article/save', async (ctx, next) => {
+	await saveArtical(ctx);
 	await next();
 });
 router.get('/article/getDetail', async (ctx, next) => {
