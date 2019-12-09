@@ -6,7 +6,7 @@ const getDetail = require('../service/article/getDetail');
 const router = new Router({ prefix: '/api' });
 
 
-router.get('/article/save', async (ctx, next) => {
+router.post('/article/save', async (ctx, next) => {
 	await saveArtical(ctx);
 	await next();
 });

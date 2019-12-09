@@ -6,8 +6,8 @@ const router = require('./app/controller/index');
 
 const app = new Koa();
 
-app.listen(8080, () => {
-	console.log('listen at 8080');
+app.listen(8000, () => {
+	console.log('listen at 8000');
 });
 
 app.use(serve(
