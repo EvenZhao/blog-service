@@ -15,14 +15,14 @@ module.exports = (ctx) => new Promise((resolve, reject) => {
 			const { title, tag, content, isPublish, createTime } = parseData;
 			const data = fs.readFileSync('publish.json');
 			let dataJson = JSON.parse(data.toString());
-			const { publish, drafts } = dataJson;
-
+			const { publish, drafts, length } = dataJson;
+			console.log(length);
 			if (isPublish) {
-				addArticle(publish, title, tag, content, createTime);
+				addArticle(publish, title, tag, content, createTime, length);
 			} else {
-				addArticle(drafts, title, tag, content, createTime);
+				addArticle(drafts, title, tag, content, createTime, length);
 			};
-
+			dataJson.length += 1;
 			const dataString = JSON.stringify(dataJson);
 
 			fs.writeFile('publish.json', dataString, (err, data) => {
@@ -51,10 +51,9 @@ module.exports = (ctx) => new Promise((resolve, reject) => {
 	}
 
 	// 添加article isPublish===true,存入已发版中。否则存入草稿箱
-	function addArticle(obj, title, tag, content, createTime) {
-		console.log(title,tag,content);
+	function addArticle(obj, title, tag, content, createTime, length) {
 		const len = obj.length;
-		const key = len + 1;
+		const key = length;
 		const _obj = {};
 		_obj[key] = {
 			key: key,
@@ -64,5 +63,6 @@ module.exports = (ctx) => new Promise((resolve, reject) => {
 			content: content
 		};
 		obj.push(_obj);
+
 	}
 });

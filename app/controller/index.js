@@ -3,6 +3,9 @@ const Router = require('koa-router');
 const saveArtical = require("../service/article/saveArtical");
 const getDetail = require('../service/article/getDetail');
 const getPublish = require('../service/article/getPublish');
+const changeStatus = require("../service/article/changeStatus");
+
+const getDrafts = require('../service/article/getDrafts');
 
 const router = new Router({ prefix: '/api' });
 
@@ -13,6 +16,14 @@ router.post('/article/save', async (ctx, next) => {
 });
 router.get('/article/getPublish', async (ctx, next) => {
 	await getPublish(ctx);
+	await next();
+});
+router.get("/article/getDrafts", async (ctx, next) => {
+	await getDrafts(ctx);
+	await next();
+});
+router.post("/article/changeStatus", async (ctx, next) => {
+	await changeStatus(ctx);
 	await next();
 });
 router.get('/article/getDetail', async (ctx, next) => {
