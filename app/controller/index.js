@@ -4,6 +4,7 @@ const saveArtical = require("../service/article/saveArtical");
 const getDetail = require('../service/article/getDetail');
 const getPublish = require('../service/article/getPublish');
 const changeStatus = require("../service/article/changeStatus");
+const deleteItem = require('../service/article/delete');
 
 const getDrafts = require('../service/article/getDrafts');
 
@@ -24,6 +25,10 @@ router.get("/article/getDrafts", async (ctx, next) => {
 });
 router.post("/article/changeStatus", async (ctx, next) => {
 	await changeStatus(ctx);
+	await next();
+});
+router.post("/article/delete", async (ctx, next) => {
+	await deleteItem(ctx);
 	await next();
 });
 router.get('/article/getDetail', async (ctx, next) => {
