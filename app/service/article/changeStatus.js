@@ -16,20 +16,24 @@ module.exports = ctx => new Promise((resolve, reject) => {
 
             if (status) {
                 changeStatus(key, publish, drafts);
+                res(publish);
             } else {
                 changeStatus(key, drafts, publish);
+                res(drafts);
             }
 
-            const dataString = JSON.stringify(dataJson);
+            function res(obj) {
+                const dataString = JSON.stringify(dataJson);
+                 fs.writeFile("publish.json", dataString, (err, data) => {
+                    if (err) console.log(err);
+                    ctx.body = {
+                        success: true,
+                        data: obj
+                    };
+                    resolve();
+                });
+            };
 
-            fs.writeFile("publish.json", dataString, (err, data) => {
-                if (err) console.log(err);
-                ctx.body = {
-                    success: true,
-                    data: publish
-                };
-                resolve();
-            });
         });
     } catch (error) {
         console.log(error);
@@ -46,17 +50,20 @@ module.exports = ctx => new Promise((resolve, reject) => {
 		}
 		return queryData;
     };
+
     function changeStatus(id,arr1,arr2){
         arr1.map((v, i) => {
             if (Object.keys(v)[0] == id) {
                 const data = arr1.splice(i,1);
-                const _key = data.key;
+                console.log(data);
+                const { key } = Object.values(data[0])[0];
+                console.log(key);
                 let obj = {};
-                obj[_key] = Object.values(v)[0];
+                obj[key] = Object.values(v)[0];
                 arr2.push(obj);
                 return;
             }
         });
         console.log(arr1)
-    }
+    };
 });
