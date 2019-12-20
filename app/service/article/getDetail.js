@@ -1,26 +1,46 @@
-module.exports = (ctx) => new Promise((resolve, reject) => {
-	const { id } = ctx.query;
+let fs = require("fs");
 
-	const dataSource = [
-		{
-			content: 'yyyyyysbbb',
-			title: 'title',
-			modifyTime: '2019-10-03 12:34:43',
-			tag: ['react'],
-			id: 1,
-		}, {
-			content: 'yyyyyysbbb',
-			title: 'title',
-			modifyTime: '2019-10-03 12:34:43',
-			tag: ['react'],
-			id: 2,
-		},
-	];
-	const newData = dataSource.find((item) => item.id == id);
-	ctx.body = {
-		success: newData || false,
-		value: newData,
-		msg: newData ? undefined : 'not found',
-	};
-	resolve();
-});
+module.exports = ctx =>
+	new Promise((resolve, reject) => {
+		let _data = "";
+		try {
+			ctx.req.on("data", data => {
+				_data += data;
+			});
+			ctx.req.addListener("end", function () {
+				// 把我们在全局定义的postdata传递给parseQueryStr，进行格式的转化
+				let parseData = parseQueryStr(_data);
+				const { key } = parseData;
+				const data = fs.readFileSync("publish.json");
+				let dataJson = JSON.parse(data.toString());
+				const { drafts } = dataJson;
+				const res = drafts.map((v, i) => {
+					if (Object.keys(v)[0] == key) {
+						const resObj = Object.values(v)[0];
+						return resObj;
+					}
+				});
+				ctx.body = {
+					success: true,
+					data: res
+				};
+				resolve();
+			});
+		} catch (error) {
+			console.log(error);
+		}
+
+		function parseQueryStr(queryStr) {
+			let queryData = {};
+			let queryStrList = queryStr.split("&");
+			// 利用了ES6提供的forOf，可以找找相关的看看
+			for (let [index, queryStr] of queryStrList.entries()) {
+				// 进行切割
+				let itemList = queryStr.split("=");
+				queryData = JSON.parse(itemList);
+			}
+			return queryData;
+		};
+
+	})
+

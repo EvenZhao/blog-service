@@ -31,7 +31,7 @@ router.post("/article/delete", async (ctx, next) => {
 	await deleteItem(ctx);
 	await next();
 });
-router.get('/article/getDetail', async (ctx, next) => {
+router.post('/article/getDetail', async (ctx, next) => {
 	await getDetail(ctx);
 	await next();
 });
