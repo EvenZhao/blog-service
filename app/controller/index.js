@@ -7,7 +7,7 @@ const changeStatus = require("../service/article/changeStatus");
 const deleteItem = require('../service/article/delete');
 
 const getDrafts = require('../service/article/getDrafts');
-
+const saveEditor = require('../service/article/saveEditor');
 const router = new Router({ prefix: '/api' });
 
 
@@ -33,6 +33,10 @@ router.post("/article/delete", async (ctx, next) => {
 });
 router.post('/article/getDetail', async (ctx, next) => {
 	await getDetail(ctx);
+	await next();
+});
+router.post('/article/saveEditor', async (ctx, next) => {
+	await saveEditor(ctx);
 	await next();
 });
 // router.get('/general/pv', async (ctx, next) => {
