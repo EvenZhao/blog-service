@@ -1,4 +1,6 @@
 let fs = require('fs');
+const path = require('path');
+let myPath = path.join(__dirname, '../../datas/');
 
 module.exports = (ctx) => new Promise((resolve, reject) => {
 	let _data = '';
@@ -9,29 +11,64 @@ module.exports = (ctx) => new Promise((resolve, reject) => {
 		ctx.req.addListener("end", function () {
 			// 把我们在全局定义的postdata传递给parseQueryStr，进行格式的转化
 			let parseData = parseQueryStr(_data);
-			// 把成功后的parseData传出去
-			// resolve(parseData);
-			console.log(parseData);
-			const { title, tag, content, isPublish, createTime } = parseData;
-			const data = fs.readFileSync('publish.json');
-			let dataJson = JSON.parse(data.toString());
-			const { publish, drafts, length } = dataJson;
-			console.log(length);
-			if (isPublish) {
-				addArticle(publish, title, tag, content, createTime, length);
+			let parseObj = {};
+			parseObj.title = parseData.title;
+			parseObj.tag = parseData.tag;
+			parseObj.content = parseData.content;
+			parseObj.createTime = parseData.createTime;
+			parseObj.status = parseData.status;
+			// 存在key,即找到该文件，进行修改。
+			if (parseData.key) {
+				parseObj.key = parseData.key;
+				// 读取文件夹中文件的个数，用长度做可key,确保唯一性
+				fs.readdir(myPath, function (err, files) {
+					if (err) console.log(err);
+					const _key = parseData.key + '.txt';
+					let resContent = [];
+					files.map(v => {
+						if (v == _key) {
+							fs.writeFile(`${myPath}${_key}`, JSON.stringify(parseObj), (error, data) => {
+								if (error) console.log(error);
+							});
+						} else {
+							fs.stat(`${myPath}${v}`, (eror, stats) => {
+								if (eror) console.log(eror);
+								fs.readFile(`${myPath}${v}`,(_err, _data) => {
+									if (_err) console.log(_err);
+									const item = JSON.parse(_data.toString());
+									if (item.status == 2) {
+										resContent.push(item);
+									}
+								});
+							});
+						}
+					});
+					ctx.body = {
+						success: true,
+						data: resContent
+					};
+					resolve();
+				});
 			} else {
-				addArticle(drafts, title, tag, content, createTime, length);
-			};
-			dataJson.length += 1;
-			const dataString = JSON.stringify(dataJson);
-
-			fs.writeFile('publish.json', dataString, (err, data) => {
-				if (err) console.log(err);
-				ctx.body = {
-					success: true
-				};
-				resolve();
-			});
+				fs.readdir(myPath, function (err, files) {
+					if (err) console.log(err);
+					let key;
+					if (files) {
+						key = files.length + 1;
+					} else {
+						key = 1;
+					}
+					parseObj.key = key;
+					console.log(parseObj);
+					fs.writeFile(`${myPath}${key}.txt`, JSON.stringify(parseObj), (err, data) => {
+						if (err) console.log(err);
+						ctx.body = {
+							success: true
+						};
+						resolve();
+					});
+				});
+			}
 		});
 	} catch (error) {
 		console.log(error)
@@ -48,21 +85,5 @@ module.exports = (ctx) => new Promise((resolve, reject) => {
 			queryData = JSON.parse(itemList);
 		}
 		return queryData;
-	}
-
-	// 添加article isPublish===true,存入已发版中。否则存入草稿箱
-	function addArticle(obj, title, tag, content, createTime, length) {
-		const len = obj.length;
-		const key = length;
-		const _obj = {};
-		_obj[key] = {
-			key: key,
-			title: title,
-			createTime: createTime,
-			tag: tag,
-			content: content
-		};
-		obj.push(_obj);
-
 	}
 });
