@@ -1,13 +1,10 @@
 const Router = require('koa-router');
 
 const saveArtical = require("../service/article/saveArtical");
-// const getDetail = require('../service/article/getDetail');
+const getDetail = require('../service/article/getDetail');
 const getList = require('../service/article/getList');
-// const changeStatus = require("../service/article/changeStatus");
-// const deleteItem = require('../service/article/delete');
+const changeStatus = require("../service/article/changeStatus");
 
-// const getDrafts = require('../service/article/getDrafts');
-// const saveEditor = require('../service/article/saveEditor');
 const router = new Router({ prefix: '/api' });
 
 /* 备注：
@@ -28,29 +25,16 @@ router.post('/article/getList', async (ctx, next) => {
 	await getList(ctx);
 	await next();
 });
-// router.get("/article/getDrafts", async (ctx, next) => {
-// 	await getDrafts(ctx);
-// 	await next();
-// });
-// router.post("/article/changeStatus", async (ctx, next) => {
-// 	await changeStatus(ctx);
-// 	await next();
-// });
-// router.post("/article/delete", async (ctx, next) => {
-// 	await deleteItem(ctx);
-// 	await next();
-// });
-// router.post('/article/getDetail', async (ctx, next) => {
-// 	await getDetail(ctx);
-// 	await next();
-// });
-// router.post('/article/saveEditor', async (ctx, next) => {
-// 	await saveEditor(ctx);
-// 	await next();
-// });
-// router.get('/general/pv', async (ctx, next) => {
-// 	await handleGetStock(ctx);
-// 	await next();
-// });
+
+router.post("/article/changeStatus", async (ctx, next) => {
+	await changeStatus(ctx);
+	await next();
+});
+
+router.post('/article/getDetail', async (ctx, next) => {
+	await getDetail(ctx);
+	await next();
+});
+
 
 module.exports = router;

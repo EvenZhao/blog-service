@@ -24,28 +24,13 @@ module.exports = (ctx) => new Promise((resolve, reject) => {
 				fs.readdir(myPath, function (err, files) {
 					if (err) console.log(err);
 					const _key = parseData.key + '.txt';
-					let resContent = [];
 					files.map(v => {
 						if (v == _key) {
-							fs.writeFile(`${myPath}${_key}`, JSON.stringify(parseObj), (error, data) => {
-								if (error) console.log(error);
-							});
-						} else {
-							fs.stat(`${myPath}${v}`, (eror, stats) => {
-								if (eror) console.log(eror);
-								fs.readFile(`${myPath}${v}`,(_err, _data) => {
-									if (_err) console.log(_err);
-									const item = JSON.parse(_data.toString());
-									if (item.status == 2) {
-										resContent.push(item);
-									}
-								});
-							});
+							fs.writeFileSync(`${myPath}${_key}`, JSON.stringify(parseObj));
 						}
 					});
 					ctx.body = {
 						success: true,
-						data: resContent
 					};
 					resolve();
 				});
