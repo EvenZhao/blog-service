@@ -1,19 +1,22 @@
-let fs = require('fs');
 const path = require('path');
 let myPath = path.join(__dirname, '../../datas/');
 
 module.exports = (ctx) => new Promise((resolve, reject) => {
-    let datas = '';
+    let _data = '';
     try {
         ctx.req.on('data', (data) => {
-            datas += data;
+            _data += data;
         });
         ctx.req.addListener("end", function () {
             // 把我们在全局定义的postdata传递给parseQueryStr，进行格式的转化
-            let parseData = parseQueryStr(datas);
-            const { status } = parseData;
-            _getList(status);
-        });
+            let parseData = parseQueryStr(_data);
+            const { name, password } = parseData;
+            console.log(name, password);
+            if (name === 'even' && password === '990990') {
+                ctx.response.redirect('/acticle/home');
+                resolve();
+            }
+        })
     } catch (error) {
         console.log(error)
     }
@@ -29,24 +32,4 @@ module.exports = (ctx) => new Promise((resolve, reject) => {
         }
         return queryData;
     }
-
-    function _getList(status) {
-        fs.readdir(myPath, function (err, files) {
-            if (err) console.log(err);
-            let resContent = [];
-            files.map(v => {
-                const content = fs.readFileSync(`${myPath}${v}`);
-                const item = JSON.parse(content.toString());
-                if (item.status == status) {
-                    resContent.push(item);
-                }
-            });
-                ctx.body = {
-                    success: true,
-                    data: resContent
-                };
-                resolve();
-        });
-    };
 });
-

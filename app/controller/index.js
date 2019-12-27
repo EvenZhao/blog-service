@@ -4,6 +4,7 @@ const saveArtical = require("../service/article/saveArtical");
 const getDetail = require('../service/article/getDetail');
 const getList = require('../service/article/getList');
 const changeStatus = require("../service/article/changeStatus");
+const login = require('../service/login/login');
 
 const router = new Router({ prefix: '/api' });
 
@@ -33,6 +34,10 @@ router.post("/article/changeStatus", async (ctx, next) => {
 
 router.post('/article/getDetail', async (ctx, next) => {
 	await getDetail(ctx);
+	await next();
+});
+router.post('/login', async (ctx, next) => {
+	await login(ctx);
 	await next();
 });
 
